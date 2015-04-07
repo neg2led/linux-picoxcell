@@ -505,8 +505,12 @@ dwapb_gpio_get_pdata_of(struct device *dev)
 			}
 		}
 
+		if (of_property_read_u32(port_np, "snps,gpio-base",
+					 &pp->gpio_base)) {
+			pp->gpio_base = -1;
+		}
+
 		pp->irq_shared	= false;
-		pp->gpio_base	= -1;
 		pp->name	= port_np->full_name;
 	}
 

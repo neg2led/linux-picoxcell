@@ -29,6 +29,7 @@ controller.
 - interrupts : The interrupt to the parent controller raised when GPIOs
   generate the interrupts.
 - snps,nr-gpios : The number of pins in the port, a single cell.
+- snps,gpio-base: The base to use for GPIO lines on this port, a single cell.
 
 Example:
 
@@ -43,6 +44,7 @@ gpio: gpio@20000 {
 		gpio-controller;
 		#gpio-cells = <2>;
 		snps,nr-gpios = <8>;
+		snps,gpio-base = <0>;
 		reg = <0>;
 		interrupt-controller;
 		#interrupt-cells = <2>;
@@ -55,6 +57,7 @@ gpio: gpio@20000 {
 		gpio-controller;
 		#gpio-cells = <2>;
 		snps,nr-gpios = <8>;
+		snps,gpio-base = <8>;
 		reg = <1>;
 	};
 };
