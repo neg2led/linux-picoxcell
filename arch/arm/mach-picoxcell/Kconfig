@@ -1,8 +1,37 @@
 config ARCH_PICOXCELL
-	bool "Picochip PicoXcell"
-	depends on ARCH_MULTI_V6
-	select ARCH_REQUIRE_GPIOLIB
-	select ARM_VIC
-	select DW_APB_TIMER_OF
+	bool "Intel/Picochip picoXcell"
+	depends on ARCH_MULTI_V6 && MMU
 	select HAVE_TCM
-	select NO_IOPORT_MAP
+	select OF
+	select USE_OF
+	select MFD_SYSCON
+	select PINCTRL
+	select PINCTRL_PC3X3
+	select SPARSE_IRQ
+	select ARM_VIC
+	select MULTI_IRQ_HANDLER
+	select DW_APB_TIMER_OF
+	select HIGH_RES_TIMERS
+	select COMMON_CLK
+	select CLKSRC_OF
+	select GENERIC_CLOCKEVENTS
+	select ARCH_REQUIRE_GPIOLIB
+	select GPIO_DWAPB
+	select DMADEVICES
+	select DW_DMAC
+	help
+	  Support for the Intel (formerly Picochip) picoXcell SoC family.
+
+if ARCH_PICOXCELL
+
+config SOC_PICOXCELL
+	bool
+	select SOC_BUS
+	select REGMAP
+
+config SOC_PICOXCELL_PC3X3
+	bool "Picochip pc3x3 SoC support"
+	depends on ARCH_PICOXCELL
+	select SOC_PICOXCELL
+
+endif
