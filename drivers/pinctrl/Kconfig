@@ -238,6 +238,15 @@ config PINCTRL_PALMAS
 	  open drain configuration for the Palmas series devices like
 	  TPS65913, TPS80036 etc.
 
+config PINCTRL_PC3X3
+	bool "Pinctrl driver for Picochip pc3x3"
+	depends on OF && MFD_SYSCON
+	select PINMUX
+	select GENERIC_PINCONF
+	help
+	  Picochip pc3x3 devices support the muxing of pins for different
+	  configurations of the IP.
+
 config PINCTRL_ZYNQ
 	bool "Pinctrl driver for Xilinx Zynq"
 	depends on ARCH_ZYNQ
