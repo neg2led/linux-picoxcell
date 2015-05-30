@@ -338,6 +338,23 @@ static int get_kcs_result(struct si_sm_data *kcs, unsigned char *data,
 	return kcs->read_pos;
 }
 
+#define READ_STATUS_MAX_LOOP			4
+
+#define SI_SM_WAIT_STATE(_state_)		do {			\
+	int i;								\
+	for(i = 0; i < READ_STATUS_MAX_LOOP && state != _state_; ++i) {	\
+		state = GET_STATUS_STATE(read_status(kcs));		\
+	}								\
+} while (0)
+
+#define SI_SM_WAIT_STATE2(_state_, _state2_)	do {			\
+	int i;								\
+	for(i = 0; i < READ_STATUS_MAX_LOOP &&				\
+		   state != _state_ && state != _state2_; ++i) {	\
+		state = GET_STATUS_STATE(read_status(kcs));		\
+	}								\
+} while (0)
+
 /*
  * This implements the state machine defined in the IPMI manual, see
  * that for details on how this works.  Divide that flowchart into
@@ -371,6 +388,7 @@ static enum si_sm_result kcs_event(struct si_sm_data *kcs, long time)
 			return SI_SM_IDLE;
 
 	case KCS_START_OP:
+		SI_SM_WAIT_STATE(KCS_IDLE_STATE);
 		if (state != KCS_IDLE_STATE) {
 			start_error_recovery(kcs,
 					     "State machine not idle at start");
@@ -383,6 +401,7 @@ static enum si_sm_result kcs_event(struct si_sm_data *kcs, long time)
 		break;
 
 	case KCS_WAIT_WRITE_START:
+		SI_SM_WAIT_STATE(KCS_WRITE_STATE);
 		if (state != KCS_WRITE_STATE) {
 			start_error_recovery(
 				kcs,
@@ -400,6 +419,7 @@ static enum si_sm_result kcs_event(struct si_sm_data *kcs, long time)
 		break;
 
 	case KCS_WAIT_WRITE:
+		SI_SM_WAIT_STATE(KCS_WRITE_STATE);
 		if (state != KCS_WRITE_STATE) {
 			start_error_recovery(kcs,
 					     "Not in write state for write");
@@ -415,6 +435,7 @@ static enum si_sm_result kcs_event(struct si_sm_data *kcs, long time)
 		break;
 
 	case KCS_WAIT_WRITE_END:
+		SI_SM_WAIT_STATE(KCS_WRITE_STATE);
 		if (state != KCS_WRITE_STATE) {
 			start_error_recovery(kcs,
 					     "Not in write state"
@@ -427,6 +448,7 @@ static enum si_sm_result kcs_event(struct si_sm_data *kcs, long time)
 		break;
 
 	case KCS_WAIT_READ:
+		SI_SM_WAIT_STATE2(KCS_READ_STATE, KCS_IDLE_STATE);
 		if ((state != KCS_READ_STATE) && (state != KCS_IDLE_STATE)) {
 			start_error_recovery(
 				kcs,
@@ -473,6 +495,7 @@ static enum si_sm_result kcs_event(struct si_sm_data *kcs, long time)
 		break;
 
 	case KCS_ERROR2:
+		SI_SM_WAIT_STATE(KCS_READ_STATE);
 		if (state != KCS_READ_STATE) {
 			start_error_recovery(kcs,
 					     "Not in read state for error2");
@@ -487,6 +510,7 @@ static enum si_sm_result kcs_event(struct si_sm_data *kcs, long time)
 		break;
 
 	case KCS_ERROR3:
+		SI_SM_WAIT_STATE(KCS_IDLE_STATE);
 		if (state != KCS_IDLE_STATE) {
 			start_error_recovery(kcs,
 					     "Not in idle state for error3");
@@ -516,6 +540,10 @@ static enum si_sm_result kcs_event(struct si_sm_data *kcs, long time)
 
 	return SI_SM_CALL_WITHOUT_DELAY;
 }
+
+#undef SI_SM_WAIT_STATE2
+#undef SI_SM_WAIT_STATE
+#undef READ_STATUS_MAX_LOOP
 
 static int kcs_size(void)
 {
