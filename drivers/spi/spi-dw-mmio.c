@@ -44,6 +44,7 @@ static int dw_spi_mmio_probe(struct platform_device *pdev)
 		return -ENOMEM;
 
 	dws = &dwsmmio->dws;
+	dws->bus_num = -1;
 
 	/* Get basic io resource and map it */
 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
@@ -71,7 +72,8 @@ static int dw_spi_mmio_probe(struct platform_device *pdev)
 	if (ret)
 		return ret;
 
-	dws->bus_num = pdev->id;
+	if (!pdev->dev.of_node)
+		dws->bus_num = pdev->id;
 
 	dws->max_freq = clk_get_rate(dwsmmio->clk);
 
