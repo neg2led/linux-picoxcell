@@ -10,7 +10,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-/include/ "skeleton.dtsi"
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/pinctrl/pc3x3.h>
+
+#include "skeleton.dtsi"
+
 / {
 	model = "Picochip picoXcell PC3X3";
 	compatible = "picochip,pc3x3";
@@ -18,127 +22,48 @@
 	#size-cells = <1>;
 
 	cpus {
-		#address-cells = <0>;
+		#address-cells = <1>;
 		#size-cells = <0>;
 
-		cpu {
+		cpu0: cpu@0 {
 			compatible = "arm,arm1176jz-s";
 			device_type = "cpu";
-			cpu-clock = <&arm_clk>, "cpu";
-			d-cache-line-size = <32>;
-			d-cache-size = <32768>;
-			i-cache-line-size = <32>;
-			i-cache-size = <32768>;
+			reg = <0>;
+			operating-points = <
+				140000 0 145000 0 150000 0 155000 0 160000 0
+				165000 0 170000 0 175000 0 180000 0 185000 0
+				190000 0 195000 0 200000 0 205000 0 210000 0
+				215000 0 220000 0 225000 0 230000 0 235000 0
+				240000 0 245000 0 250000 0 255000 0 260000 0
+				265000 0 270000 0 275000 0 280000 0 285000 0
+				290000 0 295000 0 300000 0 305000 0 310000 0
+				315000 0 320000 0 325000 0 330000 0 335000 0
+				340000 0 345000 0 350000 0 355000 0 360000 0
+				365000 0 370000 0 375000 0 380000 0 385000 0
+				390000 0 395000 0 400000 0 405000 0 410000 0
+				415000 0 420000 0 425000 0 430000 0 435000 0
+				440000 0 445000 0 450000 0 455000 0 460000 0
+				465000 0 470000 0 475000 0 480000 0 485000 0
+				490000 0 495000 0 500000 0 505000 0 510000 0
+				515000 0 520000 0 525000 0 530000 0 535000 0
+				540000 0 545000 0 550000 0 555000 0 560000 0
+				565000 0 570000 0 575000 0 580000 0 585000 0
+				590000 0 595000 0 600000 0 605000 0 610000 0
+				615000 0 620000 0 625000 0 630000 0 635000 0
+				640000 0 645000 0 650000 0 655000 0 660000 0
+				665000 0 670000 0 675000 0 680000 0 685000 0
+				690000 0 695000 0 700000 0
+			>;
+			clock-latency = <120000>;
+			clocks = <&arm_clk>;
 		};
 	};
 
-	clocks {
-		#address-cells = <1>;
-		#size-cells = <1>;
-		ranges;
-
-		clkgate: clkgate@800a0048 {
-			#address-cells = <1>;
-			#size-cells = <0>;
-			reg = <0x800a0048 4>;
-			compatible = "picochip,pc3x3-clk-gate";
-
-			tzprot_clk: clock@0 {
-				compatible = "picochip,pc3x3-gated-clk";
-				clock-outputs = "bus";
-				picochip,clk-disable-bit = <0>;
-				clock-frequency = <200000000>;
-				ref-clock = <&ref_clk>, "ref";
-			};
-
-			spi_clk: clock@1 {
-				compatible = "picochip,pc3x3-gated-clk";
-				clock-outputs = "bus";
-				picochip,clk-disable-bit = <1>;
-				clock-frequency = <200000000>;
-				ref-clock = <&ref_clk>, "ref";
-			};
-
-			dmac0_clk: clock@2 {
-				compatible = "picochip,pc3x3-gated-clk";
-				clock-outputs = "bus";
-				picochip,clk-disable-bit = <2>;
-				clock-frequency = <200000000>;
-				ref-clock = <&ref_clk>, "ref";
-			};
-
-			dmac1_clk: clock@3 {
-				compatible = "picochip,pc3x3-gated-clk";
-				clock-outputs = "bus";
-				picochip,clk-disable-bit = <3>;
-				clock-frequency = <200000000>;
-				ref-clock = <&ref_clk>, "ref";
-			};
-
-			ebi_clk: clock@4 {
-				compatible = "picochip,pc3x3-gated-clk";
-				clock-outputs = "bus";
-				picochip,clk-disable-bit = <4>;
-				clock-frequency = <200000000>;
-				ref-clock = <&ref_clk>, "ref";
-			};
-
-			ipsec_clk: clock@5 {
-				compatible = "picochip,pc3x3-gated-clk";
-				clock-outputs = "bus";
-				picochip,clk-disable-bit = <5>;
-				clock-frequency = <200000000>;
-				ref-clock = <&ref_clk>, "ref";
-			};
-
-			l2_clk: clock@6 {
-				compatible = "picochip,pc3x3-gated-clk";
-				clock-outputs = "bus";
-				picochip,clk-disable-bit = <6>;
-				clock-frequency = <200000000>;
-				ref-clock = <&ref_clk>, "ref";
-			};
-
-			trng_clk: clock@7 {
-				compatible = "picochip,pc3x3-gated-clk";
-				clock-outputs = "bus";
-				picochip,clk-disable-bit = <7>;
-				clock-frequency = <200000000>;
-				ref-clock = <&ref_clk>, "ref";
-			};
-
-			fuse_clk: clock@8 {
-				compatible = "picochip,pc3x3-gated-clk";
-				clock-outputs = "bus";
-				picochip,clk-disable-bit = <8>;
-				clock-frequency = <200000000>;
-				ref-clock = <&ref_clk>, "ref";
-			};
-
-			otp_clk: clock@9 {
-				compatible = "picochip,pc3x3-gated-clk";
-				clock-outputs = "bus";
-				picochip,clk-disable-bit = <9>;
-				clock-frequency = <200000000>;
-				ref-clock = <&ref_clk>, "ref";
-			};
-		};
-
-		arm_clk: clock@11 {
-			compatible = "picochip,pc3x3-pll";
-			reg = <0x800a0050 0x8>;
-			picochip,min-freq = <140000000>;
-			picochip,max-freq = <700000000>;
-			ref-clock = <&ref_clk>, "ref";
-			clock-outputs = "cpu";
-		};
-
-		pclk: clock@12 {
-			compatible = "fixed-clock";
-			clock-outputs = "bus", "pclk";
-			clock-frequency = <200000000>;
-			ref-clock = <&ref_clk>, "ref";
-		};
+	pmu {
+		compatible = "arm,arm1176-pmu";
+		interrupt-parent = <&vic0>;
+		interrupts = <30>;
+		interrupt-affinity = <&cpu0>;
 	};
 
 	paxi {
@@ -148,24 +73,48 @@
 		ranges = <0 0x80000000 0x400000>;
 
 		emac: gem@30000 {
-			compatible = "cadence,gem";
+			compatible = "cdns,gem";
 			reg = <0x30000 0x10000>;
 			interrupt-parent = <&vic0>;
 			interrupts = <31>;
+			clocks = <&pclk 0>, <&pclk 0>;
+			clock-names = "pclk", "hclk";
 		};
 
 		dmac1: dmac@40000 {
-			compatible = "snps,dw-dmac";
+			compatible = "snps,dma-spear1340", "snps,dw-apb-dmac";
 			reg = <0x40000 0x10000>;
 			interrupt-parent = <&vic0>;
 			interrupts = <25>;
+			dma-channels = <8>;
+			dma-requests = <16>;
+			dma-masters = <4>;
+			#dma-cells = <3>;
+			chan_allocation_order = <0>;
+			chan_priority = <0>;
+			block_size = <0xfff>;
+			data_width = <3 3 3 3>;
+			is_private;
+			clocks = <&dmac0_clk 0>;
+			clock-names = "hclk";
 		};
 
 		dmac2: dmac@50000 {
-			compatible = "snps,dw-dmac";
+			compatible = "snps,dma-spear1340", "snps,dw-apb-dmac";
 			reg = <0x50000 0x10000>;
 			interrupt-parent = <&vic0>;
 			interrupts = <26>;
+			dma-channels = <8>;
+			dma-requests = <16>;
+			dma-masters = <4>;
+			#dma-cells = <3>;
+			chan_allocation_order = <0>;
+			chan_priority = <0>;
+			block_size = <0xfff>;
+			data_width = <3 3 3 3>;
+			is_private;
+			clocks = <&dmac1_clk 0>;
+			clock-names = "hclk";
 		};
 
 		vic0: interrupt-controller@60000 {
@@ -173,6 +122,8 @@
 			interrupt-controller;
 			reg = <0x60000 0x1000>;
 			#interrupt-cells = <1>;
+			valid-mask = <0xfffffffe>;
+			valid-wakeup-mask = <0x80200800>;
 		};
 
 		vic1: interrupt-controller@64000 {
@@ -180,18 +131,1148 @@
 			interrupt-controller;
 			reg = <0x64000 0x1000>;
 			#interrupt-cells = <1>;
+			valid-mask = <0x000007ff>;
+			valid-wakeup-mask = <0x00000000>;
 		};
 
-		fuse: picoxcell-fuse@80000 {
-			compatible = "picoxcell,fuse-pc3x3";
-			reg = <0x80000 0x10000>;
+		axifuse: axifuse@80000 {
+			compatible = "picochip,picoxcell-axifuse";
+			reg = <0x80000 0x214>;
+			clocks = <&fuse_clk>;
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			picochip,read-once-per-boot = <&read_once_per_boot>;
+			picochip,last-time-program = <&last_time_program>;
+			picochip,global-last-time-program = <&global_last_time_program>;
+
+			secure_bootstrap_key0: secure-bootstrap-key0@0 {
+				reg = <0x0 0x10>;
+				picochip,read-once-per-boot-bit = <0>;
+				picochip,last-time-program-bit = <0>;
+			};
+
+			counter_iv: counter-iv@10 {
+				reg = <0x10 0x10>;
+				picochip,read-once-per-boot-bit = <1>;
+				picochip,last-time-program-bit = <1>;
+			};
+
+			key2: key2@20 {
+				reg = <0x20 0x10>;
+				picochip,read-once-per-boot-bit = <2>;
+				picochip,last-time-program-bit = <2>;
+			};
+
+			key3: key3@30 {
+				reg = <0x30 0x10>;
+				picochip,read-once-per-boot-bit = <3>;
+				picochip,last-time-program-bit = <3>;
+			};
+
+			key4: key4@40 {
+				reg = <0x40 0x10>;
+				picochip,read-once-per-boot-bit = <4>;
+				picochip,last-time-program-bit = <4>;
+			};
+
+			key5: key5@50 {
+				reg = <0x50 0x10>;
+				picochip,read-once-per-boot-bit = <5>;
+				picochip,last-time-program-bit = <5>;
+			};
+
+			die_identification_number: die-identification-number@60 {
+				reg = <0x60 0x10>;
+				picochip,read-once-per-boot-bit = <6>;
+				picochip,last-time-program-bit = <6>;
+			};
+
+			/* temp_cal_offset on pc30xx, unused elsewhere */
+			/*
+			reserved_aa: reserved-aa@70 {
+				reg = <0x70 0x1>;
+			};
+
+			reserved_for_picochip_use_only: reserved-for-picochip-use-only@71 {
+				reg = <0x71 0x1>;
+				picochip,read-once-per-boot-bit = <6>;
+				picochip,last-time-program-bit = <6>;
+			};
+
+			reserved_0: reserved-0@72 {
+				reg = <0x72 0x2>;
+			};
+			*/
+
+			read_once_per_boot: read-once-per-boot@74 {
+				reg = <0x74 0x2>;
+				bit-offset = <0x0>;
+				nbits = <0xa>;
+			};
+
+			last_time_program: last-time-program@75 {
+				reg = <0x75 0x2>;
+				bit-offset = <0x2>;
+				nbits = <0xa>;
+			};
+
+			disable_jtag_read_key: disable-jtag-read-key@76 {
+				reg = <0x76 0x2>;
+				bit-offset = <0x4>;
+				nbits = <0xa>;
+			};
+
+			/*
+			reserved_1: reserved-1@77 {
+				reg = <0x77 0x5>;
+				bit-offset = <0x6>;
+				nbits = <0x22>;
+			};
+			*/
+
+			secure_boot: secure-boot@7c {
+				reg = <0x7c 0x1>;
+				bit-offset = <0x0>;
+				nbits = <0x1>;
+			};
+
+			disable_trustzone: disable-trustzone@7c {
+				reg = <0x7c 0x1>;
+				bit-offset = <0x1>;
+				nbits = <0x1>;
+			};
+
+			global_last_time_program: global-last-time-program@7c {
+				reg = <0x7c 0x1>;
+				bit-offset = <0x2>;
+				nbits = <0x1>;
+			};
+
+			disable_debug: disable-debug@7c {
+				reg = <0x7c 0x1>;
+				bit-offset = <0x3>;
+				nbits = <0x1>;
+			};
+
+			disable_isc: disable-isc@7c {
+				reg = <0x7c 0x1>;
+				bit-offset = <0x4>;
+				nbits = <0x1>;
+			};
+
+			disable_jtag: disable-jtag@7c {
+				reg = <0x7c 0x1>;
+				bit-offset = <0x5>;
+				nbits = <0x1>;
+			};
+
+			disable_invasive_debug_in_secure: disable-invasive-debug-in-secure@7c {
+				reg = <0x7c 0x1>;
+				bit-offset = <0x6>;
+				nbits = <0x1>;
+			};
+
+			disable_non_invasive_debug_in_secure: disable-non-invasive-debug-in-secure@7c {
+				reg = <0x7c 0x1>;
+				bit-offset = <0x7>;
+				nbits = <0x1>;
+			};
+
+			disable_cp15_register: disable-cp15-register@7d {
+				reg = <0x7d 0x1>;
+				bit-offset = <0x0>;
+				nbits = <0x1>;
+			};
+
+			dual_single_memif: dual-single-memif@7d {
+				reg = <0x7d 0x1>;
+				bit-offset = <0x1>;
+				nbits = <0x1>;
+			};
+
+			disable_non_secure_parallel_flash: disable-non-secure-parallel-flash@7d {
+				reg = <0x7d 0x1>;
+				bit-offset = <0x2>;
+				nbits = <0x1>;
+			};
+
+			otp_read_once_per_boot: otp-read-once-per-boot@7d {
+				reg = <0x7d 0x1>;
+				bit-offset = <0x3>;
+				nbits = <0x4>;
+			};
+
+			otp_last_time_program: otp-last-time-program@7d {
+				reg = <0x7d 0x2>;
+				bit-offset = <0x7>;
+				nbits = <0x4>;
+			};
+
+			otp_disable_jtag_read: otp-disable-jtag-read@7e {
+				reg = <0x7e 0x1>;
+				bit-offset = <0x3>;
+				nbits = <0x4>;
+			};
+
+			otp_global_last_time_program: otp-global-last-time-program@7e {
+				reg = <0x7e 0x1>;
+				bit-offset = <0x7>;
+				nbits = <0x1>;
+			};
+
+			otp_disable_jtag: otp-disable-jtag@7f {
+				reg = <0x7f 0x1>;
+				bit-offset = <0x0>;
+				nbits = <0x1>;
+			};
+
+			otp_boot_mode: otp-boot-mode@7f {
+				reg = <0x7f 0x1>;
+				bit-offset = <0x1>;
+				nbits = <0x2>;
+			};
+
+			/*
+			reserved_ab: reserved-ab@7f {
+				reg = <0x7f 0x1>;
+				bit-offset = <0x3>;
+				nbits = <0x2>;
+			};
+			*/
+
+			/* when on pc30xx: otp_direct_io_disable on 1021:1021 (1 bit), offset 5 - two bits at offset 6 reserved */
+			/*
+			reserved_2: reserved-2@7f {
+				reg = <0x7f 0x1>;
+				bit-offset = <0x5>;
+				nbits = <0x3>;
+			};
+			*/
+
+			partition_1: partition-1@80 {
+				reg = <0x80 0x80>;
+				picochip,read-once-per-boot-bit = <7>;
+				picochip,last-time-program-bit = <7>;
+			};
+
+			partition_2: partition-2@100 {
+				reg = <0x100 0x80>;
+				picochip,read-once-per-boot-bit = <8>;
+				picochip,last-time-program-bit = <8>;
+			};
+
+			partition_3: partition-3@180 {
+				reg = <0x180 0x80>;
+				picochip,read-once-per-boot-bit = <9>;
+				picochip,last-time-program-bit = <9>;
+			};
 		};
 
 		ssi: picoxcell-spi@90000 {
-			compatible = "picoxcell,spi";
+			compatible = "snps,dw-apb-ssi";
+			#address-cells = <1>;
+			#size-cells = <0>;
 			reg = <0x90000 0x10000>;
 			interrupt-parent = <&vic0>;
 			interrupts = <10>;
+			dmas = <&dmac2 5 3 3>, <&dmac2 6 3 3>;
+			dma-names = "rx", "tx";
+			clocks = <&spi_clk>;
+			num-cs = <4>;
+			reg-io-width = <2>;
+			status = "disabled";
+		};
+
+		/*
+		 * 0x0000: System Configuration (pinctrl and others)
+		 * 0x0004: JTAG/ISC (? read-only)
+		 * 0x0008: IRQ (picoArray)
+		 * 0x000c: Purge Configuration Ports (picoArray - maybe this should be in the config port driver?)
+		 * 0x0010: DMAC2 Configuration (picoArray comms)
+		 * 0x0014: Device ID (general)
+		 * 0x0018: Revision ID (general)
+		 * 0x001c: Snoop AXI Error IRQ Enable (snoop reporter)
+		 * 0x0020: Snoop AXI Error IRQ Clear (snoop reporter)
+		 * 0x0024: Snoop AXI Error IRQ Mask (snoop reporter)
+		 * 0x0028: Snoop AXI Error IRQ Test (snoop reporter)
+		 * 0x002c: Snoop AXI Error IRQ Pre_Mask (snoop reporter)
+		 * 0x0030: Snoop AXI Error IRQ Post_Mask (snoop reporter)
+		 * 0x0034: SHD GPIO Muxing (pinctrl, sdgpio)
+		 * 0x0038: PAI GPIO Control (pinctrl)
+		 * 0x003c: EBI GPIO Control (pinctrl)
+		 * 0x0040: Decode GPIO Control (pinctrl)
+		 * 0x0044: Misc Interface GPIO Control (pinctrl)
+		 * 0x0048: Clock Gating Control (clkgate)
+		 * 0x0050: ARM PLL, Program ARM Frequency (arm-pll)
+		 * 0x0054: ARM PLL, Read ARM Frequency (arm-pll)
+		 * 0x0100: Config Write Port (config-port)
+		 * 0x0200: Config Read Port (config-port)
+		 */
+
+		syscon: system-configuration@a0000 {
+			compatible = "syscon";
+			reg = <0xa0000 0x4>;
+			little-endian;
+		};
+
+		soc_id: soc-identifier@a0014 {
+			compatible = "picochip,soc-identifier", "syscon";
+			reg = <0xa0014 0x8>;
+			little-endian;
+		};
+
+		bus_err: snoop-axi@a001c {
+			compatible = "picochip,pc3x3-bus-edac";
+			reg = <0xa001c 0x18>;
+			interrupt-parent = <&vic0>;
+			interrupts = <8 9>;
+			interrupt-names = "write", "read";
+			default-panic-on-ue;
+		};
+
+		shdmux: shared-mux-register@a0034 {
+			compatible = "syscon";
+			reg = <0xa0034 0x4>;
+			little-endian;
+		};
+
+		pinctrl: pin-controller@a0034 {
+			compatible = "picochip,pc3x3-pinctrl";
+			reg = <0xa0038 0x14>;
+			picochip,syscon = <&syscon>;
+			picochip,shdmux = <&shdmux>;
+
+			gpio0: gpio0 {_{
+				function	= "gpio";
+				groups		= "shd_gpio0_grp";
+			};};
+
+			gpio1: gpio1 {_{
+				function	= "gpio";
+				groups		= "shd_gpio1_grp";
+			};};
+
+			gpio2: gpio2 {_{
+				function	= "gpio";
+				groups		= "shd_gpio2_grp";
+			};};
+
+			gpio3: gpio3 {_{
+				function	= "gpio";
+				groups		= "shd_gpio3_grp";
+			};};
+
+			gpio4_ebi: gpio4_ebi {_{
+				function	= "gpio";
+				groups		= "ebi_addr_22_grp";
+			};};
+
+			gpio4_pai: gpio4_pai {_{
+				function	= "gpio";
+				groups		= "pai_tx_data_0_grp";
+			};};
+
+			gpio5_ebi: gpio5_ebi {_{
+				function	= "gpio";
+				groups		= "ebi_addr_23_grp";
+			};};
+
+			gpio5_pai: gpio5_pai {_{
+				function	= "gpio";
+				groups		= "pai_tx_data_1_grp";
+			};};
+
+			gpio6_ebi: gpio6_ebi {_{
+				function	= "gpio";
+				groups		= "ebi_addr_24_grp";
+			};};
+
+			gpio6_pai: gpio6_pai {_{
+				function	= "gpio";
+				groups		= "pai_tx_data_2_grp";
+			};};
+
+			gpio7_ebi: gpio7_ebi {_{
+				function	= "gpio";
+				groups		= "ebi_addr_25_grp";
+			};};
+
+			gpio7_pai: gpio7_pai {_{
+				function	= "gpio";
+				groups		= "pai_tx_data_3_grp";
+			};};
+
+			gpio8: gpio8 {_{
+				function	= "gpio";
+				groups		= "shd_gpio_grp";
+			};};
+
+			gpio9: gpio9 {_{
+				function	= "gpio";
+				groups		= "boot_mode_0_grp";
+			};};
+
+			gpio10: gpio10 {_{
+				function	= "gpio";
+				groups		= "boot_mode_1_grp";
+			};};
+
+			gpio11: gpio11 {_{
+				function	= "gpio";
+				groups		= "sdram_speed_sel_grp";
+			};};
+
+			gpio12: gpio12 {_{
+				function	= "gpio";
+				groups		= "mii_rev_en_grp";
+			};};
+
+			gpio13: gpio13 {_{
+				function	= "gpio";
+				groups		= "mii_rmii_en_grp";
+			};};
+
+			gpio14: gpio14 {_{
+				function	= "gpio";
+				groups		= "mii_speed_sel_grp";
+			};};
+
+			gpio15: gpio15 {_{
+				function	= "gpio";
+				groups		= "ebi_addr_26_grp";
+			};};
+
+			gpio16: gpio16 {_{
+				function	= "gpio";
+				groups		= "shd_gpio16_grp";
+			};};
+
+			gpio17: gpio17 {_{
+				function	= "gpio";
+				groups		= "shd_gpio17_grp";
+			};};
+
+			gpio18: gpio18 {_{
+				function	= "gpio";
+				groups		= "shd_gpio18_grp";
+			};};
+
+			gpio19: gpio19 {_{
+				function	= "gpio";
+				groups		= "shd_gpio19_grp";
+			};};
+
+			gpio20_ebi: gpio20 {_{
+				function	= "gpio";
+				groups		= "ebi_addr_18_grp";
+			};};
+
+			gpio20_pai: gpio20_pai {_{
+				function	= "gpio";
+				groups		= "pai_rx_data_0_grp";
+			};};
+
+			gpio21_ebi: gpio21 {_{
+				function	= "gpio";
+				groups		= "ebi_addr_19_grp";
+			};};
+
+			gpio21_pai: gpio21_pai {_{
+				function	= "gpio";
+				groups		= "pai_rx_data_1_grp";
+			};};
+
+			gpio22_ebi: gpio22 {_{
+				function	= "gpio";
+				groups		= "ebi_addr_20_grp";
+			};};
+
+			gpio22_pai: gpio22_pai {_{
+				function	= "gpio";
+				groups		= "pai_rx_data_2_grp";
+			};};
+
+			gpio23_ebi: gpio23 {_{
+				function	= "gpio";
+				groups		= "ebi_addr_21_grp";
+			};};
+
+			gpio23_pai: gpio23_pai {_{
+				function	= "gpio";
+				groups		= "pai_rx_data_3_grp";
+			};};
+
+			gpio24: gpio24 {_{
+				function	= "gpio";
+				groups		= "pai_tx_data_4_grp";
+			};};
+
+			gpio25: gpio25 {_{
+				function	= "gpio";
+				groups		= "pai_tx_data_5_grp";
+			};};
+
+			gpio26: gpio26 {_{
+				function	= "gpio";
+				groups		= "pai_tx_data_6_grp";
+			};};
+
+			gpio27: gpio27 {_{
+				function	= "gpio";
+				groups		= "pai_tx_data_7_grp";
+			};};
+
+			gpio28: gpio28 {_{
+				function	= "gpio";
+				groups		= "pai_rx_data_4_grp";
+			};};
+
+			gpio29: gpio29 {_{
+				function	= "gpio";
+				groups		= "pai_rx_data_5_grp";
+			};};
+
+			gpio30: gpio30 {_{
+				function	= "gpio";
+				groups		= "pai_rx_data_6_grp";
+			};};
+
+			gpio31: gpio31 {_{
+				function	= "gpio";
+				groups		= "pai_rx_data_7_grp";
+			};};
+
+			gpio32: gpio32 {_{
+				function	= "gpio";
+				groups		= "ebi_addr_14_grp";
+			};};
+
+			gpio33: gpio33 {_{
+				function	= "gpio";
+				groups		= "ebi_addr_15_grp";
+			};};
+
+			gpio34: gpio34 {_{
+				function	= "gpio";
+				groups		= "ebi_addr_16_grp";
+			};};
+
+			gpio35: gpio35 {_{
+				function	= "gpio";
+				groups		= "ebi_addr_17_grp";
+			};};
+
+			gpio36: gpio36 {_{
+				function	= "gpio";
+				groups		= "ebi_decode_0_grp";
+			};};
+
+			gpio37: gpio37 {_{
+				function	= "gpio";
+				groups		= "ebi_decode_1_grp";
+			};};
+
+			gpio38: gpio38 {_{
+				function	= "gpio";
+				groups		= "ebi_decode_2_grp";
+			};};
+
+			gpio39: gpio39 {_{
+				function	= "gpio";
+				groups		= "ebi_decode_3_grp";
+			};};
+
+			gpio40_42: gpio40-42 {_{
+				function	= "gpio";
+				groups		= "ssi_grp";
+			};};
+
+			gpio43_49: gpio43-49 {_{
+				function	= "gpio";
+				groups		= "mii_grp";
+			};};
+
+			gpio50_52: gpio40-52 {_{
+				function	= "gpio";
+				groups		= "maxphy_grp";
+			};};
+
+			gpio53: gpio53 {_{
+				function	= "gpio";
+				groups		= "ebi_clk_grp";
+			};};
+
+			gpio54: gpio54 {_{
+				function	= "gpio";
+				groups		= "boot_error_grp";
+			};};
+
+			ebi_addr_14: ebi_addr_14 {_{
+				function	= "ebi";
+				groups		= "ebi_addr_14_grp";
+			};};
+
+			ebi_addr_15: ebi_addr_15 {_{
+				function	= "ebi";
+				groups		= "ebi_addr_15_grp";
+			};};
+
+			ebi_addr_16: ebi_addr_16 {_{
+				function	= "ebi";
+				groups		= "ebi_addr_16_grp";
+			};};
+
+			ebi_addr_17: ebi_addr_17 {_{
+				function	= "ebi";
+				groups		= "ebi_addr_17_grp";
+			};};
+
+			ebi_addr_18: ebi_addr_18 {_{
+				function	= "ebi";
+				groups		= "ebi_addr_18_grp";
+			};};
+
+			ebi_addr_19: ebi_addr_19 {_{
+				function	= "ebi";
+				groups		= "ebi_addr_19_grp";
+			};};
+
+			ebi_addr_20: ebi_addr_20 {_{
+				function	= "ebi";
+				groups		= "ebi_addr_20_grp";
+			};};
+
+			ebi_addr_21: ebi_addr_21 {_{
+				function	= "ebi";
+				groups		= "ebi_addr_21_grp";
+			};};
+
+			ebi_addr_22: ebi_addr_22 {_{
+				function	= "ebi";
+				groups		= "ebi_addr_22_grp";
+			};};
+
+			ebi_addr_23: ebi_addr_23 {_{
+				function	= "ebi";
+				groups		= "ebi_addr_23_grp";
+			};};
+
+			ebi_addr_24: ebi_addr_24 {_{
+				function	= "ebi";
+				groups		= "ebi_addr_24_grp";
+			};};
+
+			ebi_addr_25: ebi_addr_25 {_{
+				function	= "ebi";
+				groups		= "ebi_addr_25_grp";
+			};};
+
+			ebi_addr_26: ebi_addr_26 {_{
+				function	= "ebi";
+				groups		= "ebi_addr_26_grp";
+			};};
+
+			ebi_clk_pin: ebi_clk {_{
+				function	= "ebi";
+				groups		= "ebi_clk_grp";
+			};};
+
+			ebi_pins: ebi {_{
+				function	= "ebi";
+				groups		= "ebi_addr_14_grp",
+						  "ebi_addr_15_grp",
+						  "ebi_addr_16_grp",
+						  "ebi_addr_17_grp",
+						  "ebi_addr_18_grp",
+						  "ebi_addr_19_grp",
+						  "ebi_addr_20_grp",
+						  "ebi_addr_21_grp",
+						  "ebi_addr_22_grp",
+						  "ebi_addr_23_grp",
+						  "ebi_addr_24_grp",
+						  "ebi_addr_25_grp",
+						  "ebi_addr_26_grp",
+						  "ebi_clk_grp";
+			};};
+
+			pai_tx_data_0: pai_tx_data_0 {_{
+				function	= "pai";
+				groups		= "pai_tx_data_0_grp";
+			};};
+
+			pai_tx_data_1: pai_tx_data_1 {_{
+				function	= "pai";
+				groups		= "pai_tx_data_1_grp";
+			};};
+
+			pai_tx_data_2: pai_tx_data_2 {_{
+				function	= "pai";
+				groups		= "pai_tx_data_2_grp";
+			};};
+
+			pai_tx_data_3: pai_tx_data_3 {_{
+				function	= "pai";
+				groups		= "pai_tx_data_3_grp";
+			};};
+
+			pai_tx_data_4: pai_tx_data_4 {_{
+				function	= "pai";
+				groups		= "pai_tx_data_4_grp";
+			};};
+
+			pai_tx_data_5: pai_tx_data_5 {_{
+				function	= "pai";
+				groups		= "pai_tx_data_5_grp";
+			};};
+
+			pai_tx_data_6: pai_tx_data_6 {_{
+				function	= "pai";
+				groups		= "pai_tx_data_6_grp";
+			};};
+
+			pai_tx_data_7: pai_tx_data_7 {_{
+				function	= "pai";
+				groups		= "pai_tx_data_7_grp";
+			};};
+
+			pai_rx_data_0: pai_rx_data_0 {_{
+				function	= "pai";
+				groups		= "pai_rx_data_0_grp";
+			};};
+
+			pai_rx_data_1: pai_rx_data_1 {_{
+				function	= "pai";
+				groups		= "pai_rx_data_1_grp";
+			};};
+
+			pai_rx_data_2: pai_rx_data_2 {_{
+				function	= "pai";
+				groups		= "pai_rx_data_2_grp";
+			};};
+
+			pai_rx_data_3: pai_rx_data_3 {_{
+				function	= "pai";
+				groups		= "pai_rx_data_3_grp";
+			};};
+
+			pai_rx_data_4: pai_rx_data_4 {_{
+				function	= "pai";
+				groups		= "pai_rx_data_4_grp";
+			};};
+
+			pai_rx_data_5: pai_rx_data_5 {_{
+				function	= "pai";
+				groups		= "pai_rx_data_5_grp";
+			};};
+
+			pai_rx_data_6: pai_rx_data_6 {_{
+				function	= "pai";
+				groups		= "pai_rx_data_6_grp";
+			};};
+
+			pai_rx_data_7: pai_rx_data_7 {_{
+				function	= "pai";
+				groups		= "pai_rx_data_7_grp";
+			};};
+
+			pai_pins: pai {_{
+				function	= "pai";
+				groups		= "pai_tx_data_0_grp",
+						  "pai_tx_data_1_grp",
+						  "pai_tx_data_2_grp",
+						  "pai_tx_data_3_grp",
+						  "pai_tx_data_4_grp",
+						  "pai_tx_data_5_grp",
+						  "pai_tx_data_6_grp",
+						  "pai_tx_data_7_grp",
+						  "pai_rx_data_0_grp",
+						  "pai_rx_data_1_grp",
+						  "pai_rx_data_2_grp",
+						  "pai_rx_data_3_grp",
+						  "pai_rx_data_4_grp",
+						  "pai_rx_data_5_grp",
+						  "pai_rx_data_6_grp",
+						  "pai_rx_data_7_grp";
+			};};
+
+			ssi_pins: ssi {_{
+				function	= "ssi";
+				groups		= "ssi_grp";
+			};};
+
+			mii_pins: mii {_{
+				function	= "mii";
+				groups		= "mii_grp";
+			};};
+
+			mii_as_gpio: mii_as_gpio {_{
+				function	= "gpio";
+				groups		= "mii_grp";
+			};};
+
+			maxphy_pins: maxphy {_{
+				function	= "maxphy";
+				groups		= "maxphy_grp";
+			};};
+
+			fsyn_pin: fsyn_pin {_{
+				function	= "fsyn";
+				groups		= "fsyn_grp";
+			};};
+
+			decode_0_ssi: decode_0_ssi {_{
+				function	= "ssi";
+				groups		= "ebi_decode_0_grp";
+			};};
+
+			decode_1_ssi: decode_1_ssi {_{
+				function	= "ssi";
+				groups		= "ebi_decode_1_grp";
+			};};
+
+			decode_2_ssi: decode_2_ssi {_{
+				function	= "ssi";
+				groups		= "ebi_decode_2_grp";
+			};};
+
+			decode_3_ssi: decode_3_ssi {_{
+				function	= "ssi";
+				groups		= "ebi_decode_3_grp";
+			};};
+
+			decode_as_ssi: decode_as_ssi {_{
+				function	= "ssi";
+				groups		= "ebi_decode_0_grp",
+						  "ebi_decode_1_grp",
+						  "ebi_decode_2_grp",
+						  "ebi_decode_3_grp";
+			};};
+
+			decode_0_ebi: decode_0_ebi {_{
+				function	= "ebi";
+				groups		= "ebi_decode_0_grp";
+			};};
+
+			decode_1_ebi: decode_1_ebi {_{
+				function	= "ebi";
+				groups		= "ebi_decode_1_grp";
+			};};
+
+			decode_2_ebi: decode_2_ebi {_{
+				function	= "ebi";
+				groups		= "ebi_decode_2_grp";
+			};};
+
+			decode_3_ebi: decode_3_ebi {_{
+				function	= "ebi";
+				groups		= "ebi_decode_3_grp";
+			};};
+
+			decode_as_ebi: decode_as_ebi {_{
+				function	= "ebi";
+				groups		= "ebi_decode_0_grp",
+						  "ebi_decode_1_grp",
+						  "ebi_decode_2_grp",
+						  "ebi_decode_3_grp";
+			};};
+
+			decode_as_gpio: decode_as_gpio {_{
+				function	= "gpio";
+				groups		= "ebi_decode_0_grp",
+						  "ebi_decode_1_grp",
+						  "ebi_decode_2_grp",
+						  "ebi_decode_3_grp";
+			};};
+
+			sdgpio0: sdgpio0 {_{
+				function	= "sdgpio";
+				groups		= "shd_gpio16_grp";
+			};};
+
+			sdgpio1: sdgpio1 {_{
+				function	= "sdgpio";
+				groups		= "shd_gpio17_grp";
+			};};
+
+			sdgpio2: sdgpio2 {_{
+				function	= "sdgpio";
+				groups		= "shd_gpio18_grp";
+			};};
+
+			sdgpio3: sdgpio3 {_{
+				function	= "sdgpio";
+				groups		= "shd_gpio19_grp";
+			};};
+
+			sdgpio4_ebi: sdgpio4_ebi {_{
+				function	= "sdgpio";
+				groups		= "ebi_addr_18_grp";
+			};};
+
+			sdgpio4_pai: sdgpio4_pai {_{
+				function	= "sdgpio";
+				groups		= "pai_rx_data_0_grp";
+			};};
+
+			sdgpio5_ebi: sdgpio5_ebi {_{
+				function	= "sdgpio";
+				groups		= "ebi_addr_19_grp";
+			};};
+
+			sdgpio5_pai: sdgpio5_pai {_{
+				function	= "sdgpio";
+				groups		= "pai_rx_data_1_grp";
+			};};
+
+			sdgpio6_ebi: sdgpio6_ebi {_{
+				function	= "sdgpio";
+				groups		= "ebi_addr_20_grp";
+			};};
+
+			sdgpio6_pai: sdgpio6_pai {_{
+				function	= "sdgpio";
+				groups		= "pai_rx_data_2_grp";
+			};};
+
+			sdgpio7_ebi: sdgpio7_ebi {_{
+				function	= "sdgpio";
+				groups		= "ebi_addr_21_grp";
+			};};
+
+			sdgpio7_pai: sdgpio7_pai {_{
+				function	= "sdgpio";
+				groups		= "pai_rx_data_3_grp";
+			};};
+
+			sdgpio8: sdgpio8 {_{
+				function	= "sdgpio";
+				groups		= "shd_gpio_grp";
+			};};
+
+			sdgpio9: sdgpio9 {_{
+				function	= "sdgpio";
+				groups		= "boot_mode_0_grp";
+			};};
+
+			sdgpio10: sdgpio10 {_{
+				function	= "sdgpio";
+				groups		= "boot_mode_1_grp";
+			};};
+
+			sdgpio11: sdgpio11 {_{
+				function	= "sdgpio";
+				groups		= "sdram_speed_sel_grp";
+			};};
+
+			sdgpio12: sdgpio12 {_{
+				function	= "sdgpio";
+				groups		= "mii_rev_en_grp";
+			};};
+
+			sdgpio13: sdgpio13 {_{
+				function	= "sdgpio";
+				groups		= "mii_rmii_en_grp";
+			};};
+
+			sdgpio14: sdgpio14 {_{
+				function	= "sdgpio";
+				groups		= "mii_speed_sel_grp";
+			};};
+
+			sdgpio15: sdgpio15 {_{
+				function	= "sdgpio";
+				groups		= "ebi_addr_26_grp";
+			};};
+
+			sdgpio16: sdgpio16 {_{
+				function	= "sdgpio";
+				groups		= "shd_gpio0_grp";
+			};};
+
+			sdgpio17: sdgpio17 {_{
+				function	= "sdgpio";
+				groups		= "shd_gpio1_grp";
+			};};
+
+			sdgpio18: sdgpio18 {_{
+				function	= "sdgpio";
+				groups		= "shd_gpio2_grp";
+			};};
+
+			sdgpio19: sdgpio19 {_{
+				function	= "sdgpio";
+				groups		= "shd_gpio3_grp";
+			};};
+
+			sdgpio20_ebi: sdgpio20_ebi {_{
+				function	= "sdgpio";
+				groups		= "ebi_addr_22_grp";
+			};};
+
+			sdgpio20_pai: sdgpio20_pai {_{
+				function	= "sdgpio";
+				groups		= "pai_tx_data_0_grp";
+			};};
+
+			sdgpio21_ebi: sdgpio21_ebi {_{
+				function	= "sdgpio";
+				groups		= "ebi_addr_23_grp";
+			};};
+
+			sdgpio21_pai: sdgpio21_pai {_{
+				function	= "sdgpio";
+				groups		= "pai_tx_data_1_grp";
+			};};
+
+			sdgpio22_ebi: sdgpio22_ebi {_{
+				function	= "sdgpio";
+				groups		= "ebi_addr_24_grp";
+			};};
+
+			sdgpio22_pai: sdgpio22_pai {_{
+				function	= "sdgpio";
+				groups		= "pai_tx_data_2_grp";
+			};};
+
+			sdgpio23_ebi: sdgpio23_ebi {_{
+				function	= "sdgpio";
+				groups		= "ebi_addr_25_grp";
+			};};
+
+			sdgpio23_pai: sdgpio23_pai {_{
+				function	= "sdgpio";
+				groups		= "pai_tx_data_3_grp";
+			};};
+		};
+
+		pclk: soc-clocks@a0048 {
+			compatible = "picochip,pc3x3-pclk";
+			#clock-cells = <1>;
+			clock-output-names = "pclk", "bus";
+			clock-frequency = <200000000>;
+			clocks = <&ref_clk>;
+			clock-names = "ref";
+			reg = <0xa0048 0x4>;
+
+			tzprot_clk: gated-clock@0 {
+				compatible = "picochip,pc3x3-gated-clk";
+				#clock-cells = <0>;
+				clock-output-names = "tzprot_clk";
+				picochip,clk-disable-bit = <0>;
+			};
+
+			spi_clk: gated-clock@1 {
+				compatible = "picochip,pc3x3-gated-clk";
+				#clock-cells = <0>;
+				clock-output-names = "spi_clk";
+				picochip,clk-disable-bit = <1>;
+			};
+
+			dmac0_clk: gated-clock@2 {
+				compatible = "picochip,pc3x3-gated-clk";
+				#clock-cells = <0>;
+				clock-output-names = "dmac0_clk";
+				picochip,clk-disable-bit = <2>;
+			};
+
+			dmac1_clk: gated-clock@3 {
+				compatible = "picochip,pc3x3-gated-clk";
+				#clock-cells = <0>;
+				clock-output-names = "dmac1_clk";
+				picochip,clk-disable-bit = <3>;
+			};
+
+			ebi_clk: gated-clock@4 {
+				compatible = "picochip,pc3x3-gated-clk";
+				#clock-cells = <0>;
+				clock-output-names = "ebi_clk";
+				picochip,clk-disable-bit = <4>;
+			};
+
+			ipsec_clk: gated-clock@5 {
+				compatible = "picochip,pc3x3-gated-clk";
+				#clock-cells = <0>;
+				clock-output-names = "ipsec_clk";
+				picochip,clk-disable-bit = <5>;
+			};
+
+			l2_clk: gated-clock@6 {
+				compatible = "picochip,pc3x3-gated-clk";
+				#clock-cells = <0>;
+				clock-output-names = "l2_clk";
+				picochip,clk-disable-bit = <6>;
+			};
+
+			trng_clk: gated-clock@7 {
+				compatible = "picochip,pc3x3-gated-clk";
+				#clock-cells = <0>;
+				clock-output-names = "trng_clk";
+				picochip,clk-disable-bit = <7>;
+			};
+
+			fuse_clk: gated-clock@8 {
+				compatible = "picochip,pc3x3-gated-clk";
+				#clock-cells = <0>;
+				clock-output-names = "fuse_clk";
+				picochip,clk-disable-bit = <8>;
+			};
+
+			otp_clk: gated-clock@9 {
+				compatible = "picochip,pc3x3-gated-clk";
+				#clock-cells = <0>;
+				clock-output-names = "otp_clk";
+				picochip,clk-disable-bit = <9>;
+			};
+		};
+
+		arm_clk: clock@a0050 {
+			compatible = "picochip,pc3x3-pll";
+			#clock-cells = <0>;
+			reg = <0xa0050 0x8>;
+			picochip,min-freq = <140000000>;
+			picochip,max-freq = <700000000>;
+			picochip,clk-no-disable;
+			clocks = <&ref_clk>;
+			clock-names = "ref";
+			clock-output-names = "cpu";
+		};
+
+		cfg_port: config-port@a0100 {
+			compatible = "picochip,pc3x3-config-port";
+			reg = <0xa0100 0x200>;
+			picochip,read-retries = <16>;
+			picochip,fifo-depth = /bits/ 16 <64>;
+		};
+
+		sdgpio: sdgpio@a0100 {
+			compatible = "picochip,picoxcell-sdgpio";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			picochip,cfgport = <&cfg_port>;
+			picochip,shdmux = <&shdmux>;
+
+			status = "disabled";
+
+			porta: sdgpio-controller@0 {
+				compatible = "picochip,picoxcell-sdgpio-port";
+				gpio-controller;
+				#gpio-cells = <2>;
+				picochip,nr-gpios = /bits/ 16 <24>;
+				picochip,sdgpio-base = /bits/ 16 <0>;
+				picochip,gpio-base = /bits/ 16 <200>;
+				picochip,sdgpio-allowed = /bits/ 16 <>;
+				/* gpio-ranges = ...; */
+			};
+		};
+
+		rng: trng@b0000 {
+			compatible = "picochip,pc3x3-rng";
+			reg = <0xb0000 0x4>;
+			clocks = <&trng_clk 0>;
+			wait-timeout-us = <20>;
+			interrupt-parent = <&vic0>;
+			interrupts = <23>;
 		};
 
 		ipsec: spacc@100000 {
@@ -199,14 +1280,8 @@
 			reg = <0x100000 0x10000>;
 			interrupt-parent = <&vic0>;
 			interrupts = <24>;
-			ref-clock = <&ipsec_clk>, "ref";
-		};
-
-		srtp: spacc@140000 {
-			compatible = "picochip,spacc-srtp";
-			reg = <0x140000 0x10000>;
-			interrupt-parent = <&vic0>;
-			interrupts = <23>;
+			clocks = <&ipsec_clk>;
+			clock-names = "ref";
 		};
 
 		l2_engine: spacc@180000 {
@@ -214,7 +1289,8 @@
 			reg = <0x180000 0x10000>;
 			interrupt-parent = <&vic0>;
 			interrupts = <22>;
-			ref-clock = <&l2_clk>, "ref";
+			clocks = <&l2_clk>;
+			clock-names = "ref";
 		};
 
 		apb {
@@ -225,26 +1301,30 @@
 
 			rtc0: rtc@00000 {
 				compatible = "picochip,pc3x2-rtc";
-				clock-freq = <200000000>;
 				reg = <0x00000 0xf>;
 				interrupt-parent = <&vic0>;
 				interrupts = <8>;
+				clocks = <&pclk 0>, <&pclk 1>;
+				clock-names = "pclk", "timer";
+				status = "disabled";
 			};
 
 			timer0: timer@10000 {
-				compatible = "picochip,pc3x2-timer";
+				compatible = "snps,dw-apb-timer";
+				reg = <0x10000 0x14>;
 				interrupt-parent = <&vic0>;
 				interrupts = <4>;
-				clock-freq = <200000000>;
-				reg = <0x10000 0x14>;
+				clocks = <&pclk 0>, <&pclk 1>;
+				clock-names = "pclk", "timer";
 			};
 
 			timer1: timer@10014 {
-				compatible = "picochip,pc3x2-timer";
+				compatible = "snps,dw-apb-timer";
+				reg = <0x10014 0x14>;
 				interrupt-parent = <&vic0>;
 				interrupts = <5>;
-				clock-freq = <200000000>;
-				reg = <0x10014 0x14>;
+				clocks = <&pclk 0>, <&pclk 1>;
+				clock-names = "pclk", "timer";
 			};
 
 			gpio: gpio@20000 {
@@ -252,39 +1332,105 @@
 				reg = <0x20000 0x1000>;
 				#address-cells = <1>;
 				#size-cells = <0>;
-				reg-io-width = <4>;
 
 				banka: gpio-controller@0 {
-					compatible = "snps,dw-apb-gpio-bank";
+					compatible = "snps,dw-apb-gpio-port";
 					gpio-controller;
 					#gpio-cells = <2>;
-					gpio-generic,nr-gpio = <8>;
+					snps,nr-gpios = <8>;
+					snps,gpio-base = <0>;
+					reg = <0>;
+					interrupt-controller;
+					#interrupt-cells = <2>;
+					interrupt-parent = <&vic1>;
+					interrupts = <0 1 2 3 4 5 6 7>;
 
-					regoffset-dat = <0x50>;
-					regoffset-set = <0x00>;
-					regoffset-dirout = <0x04>;
+					/*
+					 * GPIO Ranges:
+					 *   0-3 are D4, E4, D3 and E3.
+					 * When EBI is used as GPIO:
+					 *   4-7 are A3, B3, C3 and B2
+					 * However, when PAI is GPIO, then:
+					 *   4-7 are U7, Y6, W6 and V6
+					 */
 				};
 
 				bankb: gpio-controller@1 {
-					compatible = "snps,dw-apb-gpio-bank";
+					compatible = "snps,dw-apb-gpio-port";
 					gpio-controller;
 					#gpio-cells = <2>;
-					gpio-generic,nr-gpio = <16>;
+					snps,nr-gpios = <16>;
+					snps,gpio-base = <8>;
+					reg = <1>;
 
-					regoffset-dat = <0x54>;
-					regoffset-set = <0x0c>;
-					regoffset-dirout = <0x10>;
+					/*
+					 * GPIO Ranges:
+					 *   0-11 are N4, P3, P2, P16, P17,
+					 *        T20, T18, M1, P1, N1, N2,
+					 *        and N3.
+					 * When EBI is used as GPIO:
+					 *   12-15 are M2, M3, M4 and L1
+					 * However, when PAI is GPIO, then:
+					 *   12-15 are U12, Y11, W11 and V11
+					 */
 				};
 
-				bankd: gpio-controller@2 {
-					compatible = "snps,dw-apb-gpio-bank";
+				bankc: gpio-controller@2 {
+					compatible = "snps,dw-apb-gpio-port";
 					gpio-controller;
 					#gpio-cells = <2>;
-					gpio-generic,nr-gpio = <30>;
+					snps,nr-gpios = <1>;
+					snps,gpio-base = <54>;
+					reg = <2>;
+					gpio-ranges = <&pinctrl  0 PC3X3_ARM_GPIO_54 1>;	/* Boot Error */
+				};
 
-					regoffset-dat = <0x5c>;
-					regoffset-set = <0x24>;
-					regoffset-dirout = <0x28>;
+				bankd: gpio-controller@3 {
+					compatible = "snps,dw-apb-gpio-port";
+					gpio-controller;
+					#gpio-cells = <2>;
+					snps,nr-gpios = <30>;
+					snps,gpio-base = <24>;
+					reg = <3>;
+					gpio-ranges = <&pinctrl  0 PC3X3_ARM_GPIO_24 1>,	/* Unusable (PAI) */
+						      <&pinctrl  1 PC3X3_ARM_GPIO_25 1>,	/* Unusable (PAI) */
+						      <&pinctrl  2 PC3X3_ARM_GPIO_26 1>,	/* Unusable (PAI) */
+						      <&pinctrl  3 PC3X3_ARM_GPIO_27 1>,	/* Unusable (PAI) */
+						      <&pinctrl  4 PC3X3_ARM_GPIO_28 1>,	/* Unusable (PAI) */
+						      <&pinctrl  5 PC3X3_ARM_GPIO_29 1>,	/* Unusable (PAI) */
+						      <&pinctrl  6 PC3X3_ARM_GPIO_30 1>,	/* Unusable (PAI) */
+						      <&pinctrl  7 PC3X3_ARM_GPIO_31 1>,	/* Unusable (PAI) */
+						      <&pinctrl  8 PC3X3_ARM_GPIO_32 1>,	/* GPIO/PA5V0 EN */
+						      <&pinctrl  9 PC3X3_ARM_GPIO_33 1>,	/* GPIO/MODE_LED */
+						      <&pinctrl 10 PC3X3_ARM_GPIO_34 1>,	/* GPIO/GPS LED G */
+						      <&pinctrl 11 PC3X3_ARM_GPIO_35 1>,	/* GPIO/RF PWR EN */
+						      <&pinctrl 12 PC3X3_ARM_GPIO_36 1>,	/* SPI_AUX_CS0_L - SPI Flash CS BOOT */
+						      <&pinctrl 13 PC3X3_ARM_GPIO_37 1>,	/* SPI_AUX_CS1_L - Ethernet 1588 */
+						      <&pinctrl 14 PC3X3_ARM_GPIO_38 1>,	/* SPI_AUX_CS2_L - DAC for OCXO */
+						      <&pinctrl 15 PC3X3_ARM_GPIO_39 1>,	/* SPI_AUX_CS3_L - Not Yet Assigned */
+						      <&pinctrl 16 PC3X3_ARM_GPIO_40 1>,	/* Unusable (SSI) */
+						      <&pinctrl 17 PC3X3_ARM_GPIO_41 1>,	/* Unusable (SSI) */
+						      <&pinctrl 18 PC3X3_ARM_GPIO_42 1>,	/* Unusable (SSI) */
+						      <&pinctrl 19 PC3X3_ARM_GPIO_43 1>,	/* GPIO/WDG_ENABLE */
+						      <&pinctrl 20 PC3X3_ARM_GPIO_44 1>,	/* GPIO/Service LED R */
+						      <&pinctrl 21 PC3X3_ARM_GPIO_45 1>,	/* GPIO/I2C2_SCL */
+						      <&pinctrl 22 PC3X3_ARM_GPIO_46 1>,	/* GPIO/I2C2_SDA */
+						      <&pinctrl 23 PC3X3_ARM_GPIO_47 1>,	/* GPIO/Service LED B */
+						      <&pinctrl 24 PC3X3_ARM_GPIO_48 1>,	/* GPIO/Service LED G */
+						      <&pinctrl 25 PC3X3_ARM_GPIO_49 1>,	/* GPIO/reset ADI L */
+						      <&pinctrl 26 PC3X3_ARM_GPIO_50 1>,	/* GPIO/RF_Ctrl_Reset_L */
+						      <&pinctrl 27 PC3X3_ARM_GPIO_51 1>,	/* GPIO */
+						      <&pinctrl 28 PC3X3_ARM_GPIO_52 1>,	/* GPIO */
+						      <&pinctrl 29 PC3X3_ARM_GPIO_53 1>;	/* GPIO/WDG TICK */
+				};
+			};
+
+			leds {
+				compatible = "gpio-leds";
+				boot_error {
+					label = "Boot Error";
+					gpios = <&bankc 0 GPIO_ACTIVE_LOW>;
+					default-state = "keep";
 				};
 			};
 
@@ -309,27 +1455,32 @@
 			};
 
 			wdog: watchdog@50000 {
-				compatible = "snps,dw-apb-wdg";
+				compatible = "snps,dw-wdt";
 				reg = <0x50000 0x10000>;
 				interrupt-parent = <&vic0>;
 				interrupts = <11>;
-				bus-clock = <&pclk>, "bus";
+				#clock-cells = <1>;
+				clocks = <&pclk 0>;
 			};
 
 			timer2: timer@60000 {
-				compatible = "picochip,pc3x2-timer";
+				compatible = "snps,dw-apb-timer";
+				reg = <0x60000 0x14>;
 				interrupt-parent = <&vic0>;
 				interrupts = <6>;
-				clock-freq = <200000000>;
-				reg = <0x60000 0x14>;
+				clocks = <&pclk 0>, <&pclk 1>;
+				clock-names = "pclk", "timer";
+				status = "disabled";
 			};
 
 			timer3: timer@60014 {
-				compatible = "picochip,pc3x2-timer";
+				compatible = "snps,dw-apb-timer";
+				reg = <0x60014 0x14>;
 				interrupt-parent = <&vic0>;
 				interrupts = <7>;
-				clock-freq = <200000000>;
-				reg = <0x60014 0x14>;
+				clocks = <&pclk 0>, <&pclk 1>;
+				clock-names = "pclk", "timer";
+				status = "disabled";
 			};
 		};
 	};
@@ -340,7 +1491,7 @@
 		compatible = "simple-bus";
 		ranges;
 
-		ebi@50000000 {
+		ebi: ebi@50000000 {
 			compatible = "simple-bus";
 			#address-cells = <2>;
 			#size-cells = <1>;
@@ -350,14 +1501,14 @@
 				  3 0 0x58000000 0x08000000>;
 		};
 
-		axi2pico@c0000000 {
+		axi2pico: axi2pico@c0000000 {
 			compatible = "picochip,axi2pico-pc3x3";
 			reg = <0xc0000000 0x10000>;
 			interrupt-parent = <&vic0>;
 			interrupts = <13 14 15 16 17 18 19 20 21>;
 		};
 
-		otp@ffff8000 {
+		otp: otp@ffff8000 {
 			compatible = "picochip,otp-pc3x3";
 			reg = <0xffff8000 0x8000>;
 		};

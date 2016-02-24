@@ -419,6 +419,8 @@ static int dwapb_gpio_add_port(struct dwapb_gpio *gpio,
 #endif
 	port->gc.ngpio = pp->ngpio;
 	port->gc.base = pp->gpio_base;
+	port->gc.request = gpiochip_generic_request;
+	port->gc.free = gpiochip_generic_free;
 
 	/* Only port A support debounce */
 	if (pp->idx == 0)
@@ -505,8 +507,12 @@ dwapb_gpio_get_pdata_of(struct device *dev)
 			}
 		}
 
+		if (of_property_read_u32(port_np, "snps,gpio-base",
+					 &pp->gpio_base)) {
+			pp->gpio_base = -1;
+		}
+
 		pp->irq_shared	= false;
-		pp->gpio_base	= -1;
 		pp->name	= port_np->full_name;
 	}
 

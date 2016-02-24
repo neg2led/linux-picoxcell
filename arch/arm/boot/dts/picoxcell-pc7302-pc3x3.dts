@@ -12,7 +12,9 @@
  */
 
 /dts-v1/;
-/include/ "picoxcell-pc3x3.dtsi"
+
+#include "picoxcell-pc3x3.dtsi"
+
 / {
 	model = "Picochip PC7302 (PC3X3)";
 	compatible = "picochip,pc7302-pc3x3", "picochip,pc3x3";
@@ -29,14 +31,9 @@
 	clocks {
 		ref_clk: clock@10 {
 			compatible = "fixed-clock";
-			clock-outputs = "ref";
+			#clock-cells = <0>;
+			clock-output-names = "ref";
 			clock-frequency = <20000000>;
-		};
-
-		clkgate: clkgate@800a0048 {
-			clock@4 {
-				picochip,clk-no-disable;
-			};
 		};
 	};
 
@@ -47,15 +44,18 @@
 				#address-cells = <1>;
 				#size-cells = <1>;
 				reg = <2 0x0000 0x1000>;
-				bus-clock = <&ebi_clk>, "bus";
-				gpio-control-nand,io-sync-reg =
-					<0x00000000 0x80220000>;
+				clocks = <&ebi_clk>;
+				clock-names = "bus";
 
-				gpios = <&banka 1 0	/* rdy */
-					 &banka 2 0 	/* nce */
-					 &banka 3 0 	/* ale */
-					 &banka 4 0 	/* cle */
-					 0		/* nwp */>;
+				/* use otherwise reserved I/O for sync */
+				gpio-control-nand,io-sync-reg =
+					<0x00000000 0x80200000>;
+
+				gpios = <&banka 1 0>,	/* rdy */
+					<&banka 2 0>, 	/* nce */
+					<&banka 3 0>, 	/* ale */
+					<&banka 4 0>, 	/* cle */
+					<0>;		/* nwp */
 
 				boot@100000 {
 					label = "Boot";

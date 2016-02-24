@@ -1,0 +1,332 @@
+/dts-v1/;
+
+#include "picoxcell-pc3x3.dtsi"
+
+/ {
+	model = "ip.access ipa267";
+	compatible = "ipaccess,ipa267", "picochip,pc3x3";
+
+	memory {
+		device_type = "memory";
+		reg = <0x0 0x08000000>;
+	};
+
+	chosen {
+		linux,stdout-path = &uart0;
+	};
+
+	aliases {
+		serial0 = &uart0;
+		serial1 = &uart1;
+		ethernet0 = &emac;
+		spi0 = &ssi;
+		spi1 = &radio_spi;
+		i2c0 = &i2c_int;
+		i2c1 = &i2c_ext;
+	};
+
+	clocks {
+		ref_clk: clock@10 {
+			compatible = "fixed-clock";
+			#clock-cells = <0>;
+			clock-output-names = "ref";
+			clock-frequency = <20000000>;
+		};
+	};
+
+	paxi {
+                picoxcell-spi@90000 {
+			status = "okay";
+			pinctrl-names = "default", "sleep";
+			pinctrl-0 = <&ssi_pins>;
+			pinctrl-1 = <&ssi_pins>;
+			cs-gpios = <&bankd 12 0>, <&bankd 13 0>,
+				   <&bankd 14 0>, <&bankd 15 0>;
+
+			nor: spi-nor@0 {
+				compatible = "m25p40", "jedec,spi-nor";
+				reg = <0>;
+				spi-max-frequency = <2000000>;
+				spi-cpol;
+				spi-cpha;
+				#address-cells = <1>;
+				#size-cells = <0>;
+
+				fsbl-0@0 {
+					label = "FSBL0";
+					reg = <0x00000000 0x00080000>;
+				};
+			};
+
+			mmc: mmc-spi@1 {
+				compatible = "mmc-spi-slot";
+				reg = <1>;
+				spi-max-frequency = <2000000>;
+				voltage-ranges = <3300 3300>;
+				broken-cd;
+				status = "disabled";
+			};
+
+			refdac: dac7512@2 {
+				compatible = "ti,dac7512";
+				reg = <2>;
+				spi-max-frequency = <10000>;
+				/* spi-cpha; I'm fairly confident that we're wrong here, so leave this at SPI mode 0 */
+				status = "disabled";
+			};
+
+			eswitch: ethernet-switch@3 {
+				compatible = "micrel,ksz8463";
+				reg = <3>;
+				spi-max-frequency = <1000000>;
+				status = "disabled";
+			};
+                };
+
+		pin-controller@a0034 {
+			pinctrl-names = "default", "sleep";
+			pinctrl-0 = <&pai_pins>;
+			pinctrl-1 = <&pai_pins>;
+
+			gpio_pins: gpio_pins {_{
+				function	= "gpio";
+				groups		= "shd_gpio0_grp",	/* gpio0 */
+						  "shd_gpio1_grp",	/* gpio1 */
+						  "shd_gpio2_grp",	/* gpio2 */
+						  "shd_gpio3_grp",	/* gpio3 */
+						  "ebi_addr_22_grp",	/* gpio4 */
+						  "ebi_addr_23_grp",	/* gpio5 */
+						  "ebi_addr_24_grp",	/* gpio6 */
+						  "ebi_addr_25_grp",	/* gpio7 */
+						  "shd_gpio_grp",	/* gpio8 */
+						  "boot_mode_0_grp",	/* gpio9 */
+						  "boot_mode_1_grp",	/* gpio10 */
+						  "sdram_speed_sel_grp",/* gpio11 */
+						  "mii_rev_en_grp",	/* gpio12 */
+						  "mii_rmii_en_grp",	/* gpio13 */
+						  "mii_speed_sel_grp",	/* gpio14 */
+						  "ebi_addr_26_grp",	/* gpio15 */
+						  "shd_gpio16_grp",	/* gpio16 */
+						  "shd_gpio17_grp",	/* gpio17 */
+						  "shd_gpio18_grp",	/* gpio18 */
+						  "shd_gpio19_grp",	/* gpio19 */
+						  "ebi_addr_18_grp",	/* gpio20 */
+						  "ebi_addr_19_grp",	/* gpio21 */
+						  "ebi_addr_20_grp",	/* gpio22 */
+						  "ebi_addr_21_grp",	/* gpio23 */
+						  /* "pai_tx_data_4_grp", */	/* gpio24 */
+						  /* "pai_tx_data_5_grp", */	/* gpio25 */
+						  /* "pai_tx_data_6_grp", */	/* gpio26 */
+						  /* "pai_tx_data_7_grp", */	/* gpio27 */
+						  /* "pai_rx_data_4_grp", */	/* gpio28 */
+						  /* "pai_rx_data_5_grp", */	/* gpio29 */
+						  /* "pai_rx_data_6_grp", */	/* gpio30 */
+						  /* "pai_rx_data_7_grp", */	/* gpio31 */
+						  "ebi_addr_14_grp",	/* gpio32 */
+						  "ebi_addr_15_grp",	/* gpio33 */
+						  "ebi_addr_16_grp",	/* gpio34 */
+						  "ebi_addr_17_grp",	/* gpio35 */
+						  "ebi_decode_0_grp",	/* gpio36 */
+						  "ebi_decode_1_grp",	/* gpio37 */
+						  "ebi_decode_2_grp",	/* gpio38 */
+						  "ebi_decode_3_grp",	/* gpio39 */
+						  /* "ssi_grp", */	/* gpio40-gpio42 */
+						  "mii_grp",		/* gpio43-gpio49 */
+						  "maxphy_grp",		/* gpio50-gpio52 */
+						  "ebi_clk_grp",	/* gpio53 */
+						  "boot_error_grp";	/* gpio54 (boot error) */
+			};};
+
+			sdgpio_pins: sdgpio_pins {_{
+				function = "sdgpio";
+			};};
+		};
+
+		sdgpio@a0100 {
+			status = "okay";
+			sdgpio-controller@0 {
+				gpio-ranges = <&pinctrl  0 PC3X3_SDGPIO_0      1>,
+					      <&pinctrl  1 PC3X3_SDGPIO_1      1>,
+					      <&pinctrl  2 PC3X3_SDGPIO_2      1>,
+					      <&pinctrl  3 PC3X3_SDGPIO_3      1>,
+					      <&pinctrl  4 PC3X3_SDGPIO_4_EBI  1>,
+					      <&pinctrl  5 PC3X3_SDGPIO_5_EBI  1>,
+					      <&pinctrl  6 PC3X3_SDGPIO_6_EBI  1>,
+					      <&pinctrl  7 PC3X3_SDGPIO_7_EBI  1>,
+					      <&pinctrl  8 PC3X3_SDGPIO_8      1>,
+					      <&pinctrl  9 PC3X3_SDGPIO_9      1>,
+					      <&pinctrl 10 PC3X3_SDGPIO_10     1>,
+					      <&pinctrl 11 PC3X3_SDGPIO_11     1>,
+					      <&pinctrl 12 PC3X3_SDGPIO_12     1>,
+					      <&pinctrl 13 PC3X3_SDGPIO_13     1>,
+					      <&pinctrl 14 PC3X3_SDGPIO_14     1>,
+					      <&pinctrl 15 PC3X3_SDGPIO_15     1>,
+					      <&pinctrl 16 PC3X3_SDGPIO_16     1>,
+					      <&pinctrl 17 PC3X3_SDGPIO_17     1>,
+					      <&pinctrl 18 PC3X3_SDGPIO_18     1>,
+					      <&pinctrl 19 PC3X3_SDGPIO_19     1>,
+					      <&pinctrl 20 PC3X3_SDGPIO_20_EBI 1>,
+					      <&pinctrl 21 PC3X3_SDGPIO_21_EBI 1>,
+					      <&pinctrl 22 PC3X3_SDGPIO_22_EBI 1>,
+					      <&pinctrl 23 PC3X3_SDGPIO_23_EBI 1>;
+				picochip,sdgpio-allowed = /bits/ 16 <>;
+			};
+		};
+
+		apb {
+			gpio@20000 {
+				gpio-controller@0 {
+					gpio-ranges = <&pinctrl  0 PC3X3_ARM_GPIO_0      1>,	/* GPIO/I2C_SCL */
+						      <&pinctrl  1 PC3X3_ARM_GPIO_1      1>,	/* NAND RDY */
+						      <&pinctrl  2 PC3X3_ARM_GPIO_2      1>,	/* NAND NCE */
+						      <&pinctrl  3 PC3X3_ARM_GPIO_3      1>,	/* NAND ALE */
+						      <&pinctrl  4 PC3X3_ARM_GPIO_4_EBI  1>,	/* NAND CLE */
+						      <&pinctrl  5 PC3X3_ARM_GPIO_5_EBI  1>,	/* GPIO/3G NWK G LED */
+						      <&pinctrl  6 PC3X3_ARM_GPIO_6_EBI  1>,	/* GPIO/LAN Interrupt (WTF?!) */
+						      <&pinctrl  7 PC3X3_ARM_GPIO_7_EBI  1>;	/* GPIO/I2C_SDA */
+				};
+				gpio-controller@1 {
+					gpio-ranges = <&pinctrl  0 PC3X3_ARM_GPIO_8      1>,	/* GPIO/SPI_RF_CS1_L */
+						      <&pinctrl  1 PC3X3_ARM_GPIO_9      1>,	/* GPIO/SPI_RF_CS0_L */
+						      <&pinctrl  2 PC3X3_ARM_GPIO_10     1>,	/* GPIO/SPI_RF_CLK */
+						      <&pinctrl  3 PC3X3_ARM_GPIO_11     1>,	/* GPIO/SPI_RF_MISO */
+						      <&pinctrl  4 PC3X3_ARM_GPIO_12     1>,	/* GPIO/SPI_RF_MOSI */
+						      <&pinctrl  5 PC3X3_ARM_GPIO_13     1>,	/* GPIO/SPI_RF_CS2_L */
+						      <&pinctrl  6 PC3X3_ARM_GPIO_14     1>,	/* GPIO/SPI_RF_CS3_L */
+						      <&pinctrl  7 PC3X3_ARM_GPIO_15     1>,	/* GPIO/FAULT LED R */
+						      <&pinctrl  8 PC3X3_ARM_GPIO_16     1>,	/* GPIO/RADIO_OFF */
+						      <&pinctrl  9 PC3X3_ARM_GPIO_17     1>,	/* GPIO/SW_RESET_REQ_L */
+						      <&pinctrl 10 PC3X3_ARM_GPIO_18     1>,	/* GPIO/RADIO_EN_AGC */
+						      <&pinctrl 11 PC3X3_ARM_GPIO_19     1>,	/* GPIO/RADIO_ENABLE */
+						      <&pinctrl 12 PC3X3_ARM_GPIO_20_EBI 1>,	/* GPIO/TXNRX */
+						      <&pinctrl 13 PC3X3_ARM_GPIO_21_EBI 1>,	/* GPIO/HSUPA ACK/NACK (Testpointed only) */
+						      <&pinctrl 14 PC3X3_ARM_GPIO_22_EBI 1>,	/* GPIO/NWK_LED_RED */
+						      <&pinctrl 15 PC3X3_ARM_GPIO_23_EBI 1>;	/* GPIO/DEFAULT_RESET_L */
+				};
+			};
+
+			radio_spi: spi-gpio@20000 {
+				compatible = "spi-gpio";
+				#address-cells = <0x1>;
+				#size-cells = <0>;
+				gpio-sck = <&bankb 2 0>;
+				gpio-miso = <&bankb 3 0>;
+				gpio-mosi = <&bankb 4 0>;
+				num-chipselects = <4>;
+				cs-gpios = <&bankb 1 0>, <&bankb 0 0>, <&bankb 5 0>, <&bankb 6 0>;
+
+				rspi: spidev@0 { /* spidev support is not exactly advanced */
+					compatible = "rohm,dh2228fv", "linux,spidev";
+					reg = <0>;
+					spi-max-frequency = <10000>;
+					spi-cpol;
+					spi-cpha;
+				};
+			};
+
+			i2c_int: i2c-gpio-0@20000 {
+				compatible = "i2c-gpio";
+				#address-cells = <1>;
+				#size-cells = <0>;
+				i2c-gpio,delay-us = <2>;	/* ~100 kHz */
+				i2c-gpio,timeout-ms = <100>;
+				gpios = <&banka 7 0>,		/* SDA */
+					<&banka 0 0>;		/* SCL */
+
+				/* ad7995    0x28 */
+				/* lm75      0x48 */
+				/* lm75      0x4f */
+				/* htu21     0x40 */
+				/* pca9539   0x74 (GPIO-base is 200, which is WRONG) */
+			};
+
+			i2c_ext: i2c-gpio-external@20000 {
+				compatible = "i2c-gpio";
+				#address-cells = <1>;
+				#size-cells = <0>;
+				i2c-gpio,delay-us = <2>;	/* ~100 kHz */
+				i2c-gpio,timeout-ms = <100>;
+				gpios = <&bankd 22 0>,		/* SDA */
+					<&bankd 21 0>;		/* SCL */
+
+				/* lm75      0x48 */
+			};
+
+			wdt_ext: ipa-adm6313-wdt@20000 {
+				compatible = "ipa,adm63xx-wdt";
+				enable-gpios = <&bankd 19 GPIO_ACTIVE_HIGH>;
+				tick-gpios = <&bankd 29 GPIO_ACTIVE_HIGH>;
+				timeouts = <17900000	/* minimum timeout, in microseconds (for udelay(tmo*1.2)) */
+					    25600000	/* typical timeout */
+					    38400000>;	/* maximum timeout */
+			};
+
+			gpio-restart {
+				compatible = "gpio-restart";
+				gpios = <&bankb 9 GPIO_ACTIVE_HIGH>;
+				priority = <155>;
+				active-delay = <100>;
+				inactive-delay = <100>;
+				wait-delay = <3000>;
+			};
+		};
+	};
+
+	rwid-axi {
+		ebi@50000000 {
+			nand: gpio-nand@2,0 {
+				compatible = "gpio-control-nand";
+				#address-cells = <1>;
+				#size-cells = <1>;
+				reg = <2 0x0000 0x1000>;
+				clocks = <&ebi_clk>;
+				clock-names = "bus";
+
+				/* use otherwise reserved I/O for sync */
+				gpio-control-nand,io-sync-reg =
+					<0x00000000 0x80200000>;
+
+				gpios = <&banka 1 0>,	/* rdy */
+					<&banka 2 0>, 	/* nce */
+					<&banka 3 0>, 	/* ale */
+					<&banka 4 0>, 	/* cle */
+					<0>;		/* nwp */
+
+				spl-0@0 {
+					label = "SPL0";
+					reg = <0x00000000 0x00040000>;
+				};
+
+				spl-1@40000 {
+					label = "SPL1";
+					reg = <0x00040000 0x00040000>;
+				};
+
+				spl-2@80000 {
+					label = "SPL2";
+					reg = <0x00080000 0x00040000>;
+				};
+
+				spl-3@c0000 {
+					label = "SPL3";
+					reg = <0x000c0000 0x00040000>;
+				};
+
+				primary-uboot@100000 {
+					label = "UBOOT0";
+					reg = <0x00100000 0x003e0000>;
+				};
+
+				redundant-uboot@500000 {
+					label = "UBOOT1";
+					reg = <0x00500000 0x003e0000>;
+				};
+
+				filesystem@900000 {
+					label = "FS";
+					reg = <0x00900000 0x07700000>;
+				};
+			};
+		};
+	};
+};
